@@ -213,4 +213,99 @@ public class Price {
 	public void setValue_total(Double value_total) {
 		this.value_total = value_total;
 	}
+	
+	public String getClassOpen() {
+		if (Float.compare(this.open,this.refer) == 0) {
+			return "reference";
+		}
+		if (Float.compare(this.open,this.ceiling) == 0) {
+			return "ceiling";
+		}
+		if (Float.compare(this.open,this.floor) == 0) {
+			return "floor";
+		}
+		if (Float.compare(this.open,this.floor) > 0 && Float.compare(this.open,this.refer) < 0) {
+			return "reduce";
+		}
+		if (Float.compare(this.open,this.refer) > 0 && Float.compare(this.open,this.ceiling) < 0) {
+			return "up";
+		}
+		return "";
+	}
+	
+	public String getClassClose() {
+		if (Float.compare(this.close,this.refer) == 0) {
+			return "reference";
+		}
+		if (Float.compare(this.close,this.ceiling) == 0) {
+			return "ceiling";
+		}
+		if (Float.compare(this.close,this.floor) == 0) {
+			return "floor";
+		}
+		if (Float.compare(this.close,this.floor) > 0 && Float.compare(this.close,this.refer) < 0) {
+			return "reduce";
+		}
+		if (Float.compare(this.close,this.refer) > 0 && Float.compare(this.close,this.ceiling) < 0) {
+			return "up";
+		}
+		return "";
+	}
+	
+	public String getClassHighest() {
+		if (Float.compare(this.highest,this.refer) == 0) {
+			return "reference";
+		}
+		if (Float.compare(this.highest,this.ceiling) == 0) {
+			return "ceiling";
+		}
+		if (Float.compare(this.highest,this.floor) == 0) {
+			return "floor";
+		}
+		if (Float.compare(this.highest,this.floor) > 0 && Float.compare(this.highest,this.refer) < 0) {
+			return "reduce";
+		}
+		if (Float.compare(this.highest,this.refer) > 0 && Float.compare(this.highest,this.ceiling) < 0) {
+			return "up";
+		}
+		return "";
+	}
+	
+	public String getClassLowest() {
+		if (Float.compare(this.lowest,this.refer) == 0) {
+			return "reference";
+		}
+		if (Float.compare(this.lowest,this.ceiling) == 0) {
+			return "ceiling";
+		}
+		if (Float.compare(this.lowest,this.floor) == 0) {
+			return "floor";
+		}
+		if (Float.compare(this.lowest,this.floor) > 0 && Float.compare(this.lowest,this.refer) < 0) {
+			return "reduce";
+		}
+		if (Float.compare(this.lowest,this.refer) > 0 && Float.compare(this.lowest,this.ceiling) < 0) {
+			return "up";
+		}
+		return "";
+	}
+	
+	public String getClassAvg() {
+		if (Float.compare(this.avge,this.refer) == 0) {
+			return "reference";
+		}
+		if (Float.compare(this.avge,this.ceiling) == 0) {
+			return "ceiling";
+		}
+		if (Float.compare(this.avge,this.floor) == 0) {
+			return "floor";
+		}
+		if (Float.compare(this.avge,this.floor) > 0 && Float.compare(this.avge,this.refer) < 0) {
+			return "reduce";
+		}
+		if (Float.compare(this.avge,this.refer) > 0 && Float.compare(this.avge,this.ceiling) < 0) {
+			return "up";
+		}
+		return "";
+	}
 }
