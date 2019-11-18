@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/flag-icon.min.css">
+    <link rel="stylesheet" href="../css/price.css">
+    <script src="../js/jquery-3.4.1.min.js"></script>
+    <script src="../js/popper.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <title>Stock Investment Management System</title>
+</head>
+<body>
+	<div th:replace="fragments/header :: header"></div>
+	<div class="container">
+		<div class="hero-unit">
+			<h1 th:text="#{price.history.title}">Stock price history</h1>
+			<div class="container table-responsive">
+			    <table class="table table-bordered table-striped table-dark">
+			    	<thead>
+			    		<tr>
+			    			<th scope="col" th:text="#{price.history.exchange}">Exchange</th>
+			    			<th scope="col" th:text="#{price.history.date}">Date</th>
+			    			<th scope="col" th:text="#{price.history.stock}">Stock</th>
+			    			<th scope="col" th:text="#{price.history.reference}">Reference</th>
+			    			<th scope="col" th:text="#{price.history.ceiling}">Ceiling</th>
+			    			<th scope="col" th:text="#{price.history.floor}">Floor</th>
+			    			<th scope="col" th:text="#{price.history.open}">Open</th>
+			    			<th scope="col" th:text="#{price.history.close}">Close</th>
+			    			<th scope="col" th:text="#{price.history.highest}">Highest</th>
+			    			<th scope="col" th:text="#{price.history.lowest}">Lowest</th>
+			    			<th scope="col" th:text="#{price.history.average}">Average</th>
+			    			<th scope="col" th:text="#{price.history.change_value}">+/-</th>
+			    			<th scope="col" th:text="#{price.history.change_percent}">%</th>
+			    			<th scope="col" th:text="#{price.history.volume_order}">Volume Order</th>
+			    			<th scope="col" th:text="#{price.history.volume_put}">Volume Put</th>
+			    			<th scope="col" th:text="#{price.history.volume_total}">Volume Total</th>
+			    			<th scope="col" th:text="#{price.history.value_order}">Value Order</th>
+			    			<th scope="col" th:text="#{price.history.value_put}">Value Put</th>
+			    			<th scope="col" th:text="#{price.history.value_total}">Value Total</th>
+			    		</tr>
+			    	</thead>
+			    	<tbody>
+			    		<tr th:if="${prices.empty}">
+			    			<td colspan="19">No historical stock price</td>
+			    		</tr>
+			    		<tr th:each="price : ${prices}">
+			    			<td><span th:text="${price.exchange}"> Exchange </span></td>
+			    			<td><span th:text="${#dates.format(price.date, #messages.msg('date.format'))}"> Date </span></td>
+			    			<td><span th:text="${price.stock}"> Stock </span></td>
+			    			<td><span class="reference" th:text="${price.refer}"> Reference </span></td>
+			    			<td><span class="ceiling" th:text="${price.ceiling}"> Ceiling </span></td>
+			    			<td><span class="floor" th:text="${price.floor}"> Floor </span></td>
+			    			<td><span th:text="${price.open}"> Open </span></td>
+			    			<td><span th:text="${price.close}"> Close </span></td>
+			    			<td><span th:text="${price.highest}"> Highest </span></td>
+			    			<td><span th:text="${price.lowest}"> Lowest </span></td>
+			    			<td><span th:text="${price.avge}"> Average </span></td>
+			    			<td><span th:text="${price.change_value}"> +/- </span></td>
+			    			<td><span th:text="${price.change_percent}"> % </span></td>
+			    			<td><span th:text="${price.volume_order}"> Volume Order </span></td>
+			    			<td><span th:text="${price.volume_put}"> Volume Put </span></td>
+			    			<td><span th:text="${price.volume_total}"> Volume Total </span></td>
+			    			<td><span th:text="${price.value_order}"> Value Order </span></td>
+			    			<td><span th:text="${price.value_put}"> Value Put </span></td>
+			    			<td><span th:text="${price.value_total}"> Value Total </span></td>
+			    		</tr>
+			    	</tbody>
+			    </table>
+		    </div>
+		</div>
+		<div th:replace="fragments/footer :: footer"></div>
+	</div>
+</body>
+</html>

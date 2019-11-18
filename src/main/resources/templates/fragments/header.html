@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/flag-icon.min.css">
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <title>Stock Investment Management System</title>
+</head>
+<body>
+	<div th:fragment="header">
+		<div class="container">
+			<nav class="navar navbar-expand-lg navbar-light bg-light">
+				<a class="navbar-brand" href="#"></a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainMenu" aria-controls="mainMenu" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				
+				<div class="collapse navbar-collapse" id="mainMenu">
+					<ul class="navbar-nav mr-auto">
+						<li class="nav-item active">
+							<a class="nav-link" href="#" th:href="@{/}" th:text="#{header.home}">Home</a>
+						</li>
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" href="#" id="statistics" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:text="#{header.statistics}">
+								Statistics
+							</a>
+							<div class="dropdown-menu" aria-labelledby="statistics">
+								<a class="dropdown-item" href="#" th:href="@{/price/history}" th:text="#{header.history}">History</a>
+								<a class="dropdown-item" href="#" th:href="@{/price/fluctuate}" th:text="#{header.fluctuate}">Fluctuate</a>
+								<a class="dropdown-item" href="#" th:href="@{/price/import}" th:text="#{header.import}">Import</a>
+							</div>
+						</li>
+					</ul>
+					<ul class="navbar-nav navbar-right">
+						<li class="nav-item" th:if="${#session.getAttribute('org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE').toString() != 'vn'}">
+							<a class="nav-link" href="#" th:href="@{/?lang=vn}"><span class="flag-icon flag-icon-vn"></span> Vietnam</a>
+						</li>
+						<li class="nav-item" th:if="${#session.getAttribute('org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE').toString() != 'en'}">
+							<a class="nav-link" href="#" th:href="@{/?lang=en}" ><span class="flag-icon flag-icon-us"></span> English</a>
+						</li>
+					</ul>
+				</div>
+			</nav>
+		</div>
+	</div>
+</body>
+</html>

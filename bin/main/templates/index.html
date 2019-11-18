@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/flag-icon.min.css">
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <title>Stock Investment Management System</title>
+</head>
+<body>
+	<div th:replace="fragments/header :: header"></div>
+	<div class="container">
+		<div class="hero-unit">
+			<h1 th:text="#{index.title}">Home</h1>
+			<p>
+				Welcome to the Stock Investment Management application!
+				Get started quickly by signing up.
+			</p>
+			<p>
+				<a href="#" class="btn btn-large btn-success">Sign up</a>
+			</p>
+		</div>
+		<div th:replace="fragments/footer :: footer"></div>
+	</div>
+</body>
+</html>
