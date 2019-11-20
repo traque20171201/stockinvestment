@@ -13,3 +13,10 @@
 .reduce {
 	color: #ff0000;
 }
+.bg-main {
+	background-color: #1d1d1d;
+	color: #ffffff;
+}
+.bg-sub {
+	background-color: #444444;
+}

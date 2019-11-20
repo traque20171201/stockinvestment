@@ -17,26 +17,25 @@
 		<div class="hero-unit">
 			<h1 th:text="#{price.history.title}">Stock price history</h1>
 			<div class="table-responsive">
-			    <table class="table table-bordered table-striped table-dark">
+			    <table class="table table-bordered table-striped bg-main">
 			    	<thead class="text-center">
 			    		<tr>
 			    			<th rowspan="2" scope="col" th:text="#{price.history.date}">Date</th>
 			    			<th rowspan="2" scope="col" th:text="#{price.history.stock}">Stock</th>
-			    			<th rowspan="2" scope="col" th:text="#{price.history.reference}">Reference</th>
-			    			<th rowspan="2" scope="col" th:text="#{price.history.ceiling}">Ceiling</th>
-			    			<th rowspan="2" scope="col" th:text="#{price.history.floor}">Floor</th>
-			    			<th rowspan="2" scope="col" th:text="#{price.history.open}">Open</th>
-			    			<th rowspan="2" scope="col" th:text="#{price.history.close}">Close</th>
+							<th rowspan="2" scope="col" th:text="#{price.history.close}">Close</th>
+			    			<th rowspan="2" scope="col" class="bg-sub" th:text="#{price.history.reference}">Reference</th>
+			    			<th rowspan="2" scope="col" class="bg-sub" th:text="#{price.history.ceiling}">Ceiling</th>
+			    			<th rowspan="2" scope="col" class="bg-sub" th:text="#{price.history.floor}">Floor</th>
+			    			<th rowspan="2" scope="col" th:text="#{price.history.open}">Open</th>			    			
 			    			<th rowspan="2" scope="col" th:text="#{price.history.highest}">Highest</th>
 			    			<th rowspan="2" scope="col" th:text="#{price.history.lowest}">Lowest</th>
 			    			<th rowspan="2" scope="col" th:text="#{price.history.average}">Average</th>
-			    			<th rowspan="2" scope="col" th:text="#{price.history.change_value}">+/-</th>
-			    			<th rowspan="2" scope="col" th:text="#{price.history.change_percent}">%</th>
+			    			<th rowspan="2" scope="col" class="bg-sub" th:text="#{price.history.change_value}">+/-</th>
+			    			<th rowspan="2" scope="col" class="bg-sub" th:text="#{price.history.change_percent}">%</th>
 							<th colspan="3" scope="col" th:text="#{price.history.volume}">Volume</th>
 			    		</tr>
 						<tr>							
 			    			<th scope="col" class="text-nowrap" th:text="#{price.history.volume_order}">Volume Order</th>
-			    			<th scope="col" class="text-nowrap" th:text="#{price.history.volume_put}">Volume Put</th>
 			    			<th scope="col" class="text-nowrap" th:text="#{price.history.volume_total}">Volume Total</th>
 						</tr>
 			    	</thead>
@@ -47,18 +46,17 @@
 			    		<tr th:each="price : ${prices}">
 			    			<td class="text-center"><span th:text="${#dates.format(price.date, #messages.msg('date.format'))}"> Date </span></td>
 			    			<td class="text-center"><span th:classappend="${price.getClassClose()}" th:text="${price.stock}"> Stock </span></td>
-			    			<td><span class="float-right reference" th:text="${price.refer}"> Reference </span></td>
-			    			<td><span class="float-right ceiling" th:text="${price.ceiling}"> Ceiling </span></td>
-			    			<td><span class="float-right floor" th:text="${price.floor}"> Floor </span></td>
-			    			<td><span class="float-right" th:classappend="${price.getClassOpen()}" th:text="${price.open}"> Open </span></td>
-			    			<td><span class="float-right" th:classappend="${price.getClassClose()}" th:text="${price.close}"> Close </span></td>
+							<td><span class="float-right" th:classappend="${price.getClassClose()}" th:text="${price.close}"> Close </span></td>
+			    			<td class="bg-sub"><span class="float-right reference" th:text="${price.refer}"> Reference </span></td>
+			    			<td class="bg-sub"><span class="float-right ceiling" th:text="${price.ceiling}"> Ceiling </span></td>
+			    			<td class="bg-sub"><span class="float-right floor" th:text="${price.floor}"> Floor </span></td>
+			    			<td><span class="float-right" th:classappend="${price.getClassOpen()}" th:text="${price.open}"> Open </span></td>			    			
 			    			<td><span class="float-right" th:classappend="${price.getClassHighest()}" th:text="${price.highest}"> Highest </span></td>
 			    			<td><span class="float-right" th:classappend="${price.getClassLowest()}" th:text="${price.lowest}"> Lowest </span></td>
 			    			<td><span class="float-right" th:classappend="${price.getClassAvg()}" th:text="${price.avge}"> Average </span></td>
-			    			<td><span class="float-right" th:classappend="${price.getClassClose()}" th:text="${price.change_value}"> +/- </span></td>
-			    			<td><span class="float-right" th:classappend="${price.getClassClose()}" th:text="${price.change_percent}"> % </span></td>
+			    			<td class="bg-sub"><span class="float-right" th:classappend="${price.getClassClose()}" th:text="${price.change_value}"> +/- </span></td>
+			    			<td class="bg-sub"><span class="float-right" th:classappend="${price.getClassClose()}" th:text="${price.change_percent}"> % </span></td>
 			    			<td><span class="float-right" th:text="${#numbers.formatDecimal(price.volume_order,0,'COMMA',0,'POINT')}"> Volume Order </span></td>
-			    			<td><span class="float-right" th:text="${#numbers.formatDecimal(price.volume_put,0,'COMMA',0,'POINT')}"> Volume Put </span></td>
 			    			<td><span class="float-right" th:text="${#numbers.formatDecimal(price.volume_total,0,'COMMA',0,'POINT')}"> Volume Total </span></td>
 			    		</tr>
 			    	</tbody>

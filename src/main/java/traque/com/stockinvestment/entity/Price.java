@@ -218,10 +218,10 @@ public class Price {
 		if (Float.compare(this.open,this.refer) == 0) {
 			return "reference";
 		}
-		if (Float.compare(this.open,this.ceiling) == 0) {
+		if (Float.compare(this.open,this.ceiling) >= 0) {
 			return "ceiling";
 		}
-		if (Float.compare(this.open,this.floor) == 0) {
+		if (Float.compare(this.open,this.floor) <= 0) {
 			return "floor";
 		}
 		if (Float.compare(this.open,this.floor) > 0 && Float.compare(this.open,this.refer) < 0) {
@@ -237,10 +237,10 @@ public class Price {
 		if (Float.compare(this.close,this.refer) == 0) {
 			return "reference";
 		}
-		if (Float.compare(this.close,this.ceiling) == 0) {
+		if (Float.compare(this.close,this.ceiling) >= 0) {
 			return "ceiling";
 		}
-		if (Float.compare(this.close,this.floor) == 0) {
+		if (Float.compare(this.close,this.floor) <= 0) {
 			return "floor";
 		}
 		if (Float.compare(this.close,this.floor) > 0 && Float.compare(this.close,this.refer) < 0) {
@@ -256,10 +256,10 @@ public class Price {
 		if (Float.compare(this.highest,this.refer) == 0) {
 			return "reference";
 		}
-		if (Float.compare(this.highest,this.ceiling) == 0) {
+		if (Float.compare(this.highest,this.ceiling) >= 0) {
 			return "ceiling";
 		}
-		if (Float.compare(this.highest,this.floor) == 0) {
+		if (Float.compare(this.highest,this.floor) <= 0) {
 			return "floor";
 		}
 		if (Float.compare(this.highest,this.floor) > 0 && Float.compare(this.highest,this.refer) < 0) {
@@ -275,10 +275,10 @@ public class Price {
 		if (Float.compare(this.lowest,this.refer) == 0) {
 			return "reference";
 		}
-		if (Float.compare(this.lowest,this.ceiling) == 0) {
+		if (Float.compare(this.lowest,this.ceiling) >= 0) {
 			return "ceiling";
 		}
-		if (Float.compare(this.lowest,this.floor) == 0) {
+		if (Float.compare(this.lowest,this.floor) <= 0) {
 			return "floor";
 		}
 		if (Float.compare(this.lowest,this.floor) > 0 && Float.compare(this.lowest,this.refer) < 0) {
@@ -294,10 +294,10 @@ public class Price {
 		if (Float.compare(this.avge,this.refer) == 0) {
 			return "reference";
 		}
-		if (Float.compare(this.avge,this.ceiling) == 0) {
+		if (Float.compare(this.avge,this.ceiling) >= 0) {
 			return "ceiling";
 		}
-		if (Float.compare(this.avge,this.floor) == 0) {
+		if (Float.compare(this.avge,this.floor) <= 0) {
 			return "floor";
 		}
 		if (Float.compare(this.avge,this.floor) > 0 && Float.compare(this.avge,this.refer) < 0) {
