@@ -4,16 +4,26 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,33 +31,93 @@ import org.springframework.web.multipart.MultipartFile;
 
 import traque.com.stockinvestment.entity.Price;
 import traque.com.stockinvestment.model.PriceRepository;
+import traque.com.stockinvestment.price.HistorySearch;
 
 @Controller
 @RequestMapping("/price")
 public class PriceController {
+
+	private static final Logger log = LogManager.getLogger(PriceController.class);
 	
 	@Autowired
 	private PriceRepository priceRepository;
 
 	@GetMapping("/history")
 	public String history(Model model) {
-		model.addAttribute("prices", priceRepository.findAll());
+		log.info("PriceController history start.");
+		// Initialize History Search
+		HistorySearch historySearch = new HistorySearch();
+		historySearch.setExchange(1);
+		historySearch.setStock(null);
+		historySearch.setPage(1);
+		historySearch.setSize(100);
+		Calendar calendar = Calendar.getInstance();
+		historySearch.setDate_to(calendar.getTime());
+		calendar.add(Calendar.MONTH, -1);
+		historySearch.setDate_from(calendar.getTime());
+		// Initialize Pagination
+		Pageable pageable = PageRequest.of(historySearch.getPage() - 1,historySearch.getSize(),Sort.by("date").descending().and(Sort.by("stock")));
+		// Find Price History
+		Page<Price> prices = priceRepository.findPriceHistory(historySearch.getExchange(),
+				historySearch.getStock(),
+				historySearch.getDate_from(),
+				historySearch.getDate_to(),
+				pageable);
+		// Set Display Pagination
+		int totalPages = prices.getTotalPages();
+		if (totalPages > 0) {
+			List<Integer> pageNumbers = IntStream.rangeClosed(1,totalPages).boxed().collect(Collectors.toList());
+			model.addAttribute("pageNumbers", pageNumbers);
+		}
+		// Set Attributes For Model
+		model.addAttribute("historySearch", historySearch);
+		model.addAttribute("prices", prices);
+		return "price/history";
+	}
+	
+	@PostMapping("/history")
+	public String historySearch(@ModelAttribute("historySearch") HistorySearch historySearch ,Model model) {
+		log.info("PriceController historySearch start.");
+		// Check Search All With Stock
+		if (historySearch.getStock().isEmpty()) {
+			historySearch.setStock(null);
+		}
+		// Initialize Pagination
+		Pageable pageable = PageRequest.of(historySearch.getPage() - 1,historySearch.getSize(),Sort.by("date").descending().and(Sort.by("stock")));
+		// Find Price History
+		Page<Price> prices = priceRepository.findPriceHistory(historySearch.getExchange(),
+				historySearch.getStock(),
+				historySearch.getDate_from(),
+				historySearch.getDate_to(),
+				pageable);
+		// Set Display Pagination
+		int totalPages = prices.getTotalPages();
+		if (totalPages > 0) {
+			List<Integer> pageNumbers = IntStream.rangeClosed(1,totalPages).boxed().collect(Collectors.toList());
+			model.addAttribute("pageNumbers", pageNumbers);
+		}
+		// Set Attributes For Model
+		model.addAttribute("historySearch", historySearch);
+		model.addAttribute("prices", prices);
 		return "price/history";
 	}
 	
 	@GetMapping("/fluctuate")
 	public String fluctuate(Model model) {
+		log.info("PriceController fluctuate start.");
 		return "price/fluctuate";
 	}
 	
 	@GetMapping("/import")
 	public String importExcel(Model model) {
+		log.info("PriceController importExcel start.");
 		return "price/import";
 	}
 	
 	@PostMapping("/import")
 	public String doImportExcel(@RequestParam("exchange") Integer exchange, 
 			@RequestParam("fileExcel") MultipartFile fileExcel, Model model) throws IOException, InvalidFormatException {
+		log.info("PriceController doImportExcel start.");
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 		List<Price> priceList = new ArrayList<Price>();
 		try {
@@ -57,7 +127,18 @@ public class PriceController {
 				Price price = new Price();
 				XSSFRow row = worksheet.getRow(i);
 				price.setExchange(exchange);
-				price.setDate(formatter.parse(row.getCell(0).getStringCellValue()));
+				switch(row.getCell(0).getCellType()) {
+					case NUMERIC:
+						price.setDate(row.getCell(0).getDateCellValue());
+						break;
+					case BLANK:
+					case STRING:
+					case FORMULA:
+						price.setDate(formatter.parse(row.getCell(0).getStringCellValue()));
+						break;
+					default:
+						price.setDate(null);
+				}
 				price.setStock(row.getCell(1).getStringCellValue());
 				price.setRefer((float) row.getCell(2).getNumericCellValue());
 				price.setCeiling((float) row.getCell(3).getNumericCellValue());
@@ -77,7 +158,6 @@ public class PriceController {
 				price.setValue_total(row.getCell(17).getNumericCellValue());
 				priceList.add(price);
 			}
-			model.addAttribute("prices", priceList);
 			workbook.close();
 			priceRepository.saveAll(priceList);
 		} catch (IOException e) {
@@ -85,6 +165,7 @@ public class PriceController {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
+		model.addAttribute("prices", priceList);
 		return "price/history";
 	}
 }

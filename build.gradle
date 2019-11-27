@@ -6,11 +6,15 @@ plugins {
 }
 
 group = 'traque.com'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.1'
 sourceCompatibility = '1.8'
 
 repositories {
 	mavenCentral()
+}
+
+configurations.all {
+   exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
 }
 
 dependencies {
@@ -25,10 +29,9 @@ dependencies {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 	testImplementation 'org.springframework.security:spring-security-test'
-	// https://mvnrepository.com/artifact/org.apache.poi/poi
 	compile group: 'org.apache.poi', name: 'poi', version: '4.1.1'
-	// https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml
 	compile group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.1'
+	implementation 'org.springframework.boot:spring-boot-starter-log4j2'
 }
 
 test {

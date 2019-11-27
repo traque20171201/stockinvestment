@@ -36,10 +36,14 @@
 						</li>
 					</ul>
 					<ul class="navbar-nav navbar-right">
-						<li class="nav-item" th:if="${#session.getAttribute('org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE').toString() != 'vn'}">
+						<li class="nav-item">
+							<a class="nav-link" href="#" th:href="@{/logout}" th:text="#{header.logout}">Logout</a>
+						</li>
+						<li class="nav-item" th:if="${#session.getAttribute('org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE')?.toString() == 'en' OR
+														#session.getAttribute('org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE') == null}">
 							<a class="nav-link" href="#" th:href="@{/?lang=vn}"><span class="flag-icon flag-icon-vn"></span> Vietnam</a>
 						</li>
-						<li class="nav-item" th:if="${#session.getAttribute('org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE').toString() != 'en'}">
+						<li class="nav-item" th:if="${#session.getAttribute('org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE')?.toString() == 'vn'}">
 							<a class="nav-link" href="#" th:href="@{/?lang=en}" ><span class="flag-icon flag-icon-us"></span> English</a>
 						</li>
 					</ul>
