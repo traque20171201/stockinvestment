@@ -151,55 +151,58 @@ public class PriceController {
 	
 	@PostMapping("/import")
 	public String doImportExcel(@RequestParam("exchange") Integer exchange, 
-			@RequestParam("fileExcel") MultipartFile fileExcel, Model model) throws IOException, InvalidFormatException {
+			@RequestParam("excelFiles") MultipartFile[] excelFiles, Model model) throws IOException, InvalidFormatException {
 		log.info("PriceController doImportExcel start.");
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 		List<Price> priceList = new ArrayList<Price>();
-		try {
-			XSSFWorkbook workbook = new XSSFWorkbook(fileExcel.getInputStream());
-			XSSFSheet worksheet = workbook.getSheetAt(0);
-			for(int i=3;i<worksheet.getPhysicalNumberOfRows()+1 ;i++) {
-				Price price = new Price();
-				XSSFRow row = worksheet.getRow(i);
-				price.setExchange(exchange);
-				switch(row.getCell(0).getCellType()) {
-					case NUMERIC:
-						String[] resultDate = formatter.format(row.getCell(0).getDateCellValue()).split("/");
-						price.setDate(formatter.parse(resultDate[1] + "/" + resultDate[0] + "/" + resultDate[2]));
-						break;
-					case BLANK:
-					case STRING:
-					case FORMULA:
-						price.setDate(formatter.parse(row.getCell(0).getStringCellValue()));
-						break;
-					default:
-						price.setDate(null);
+		for (MultipartFile excelFile : excelFiles) {
+			priceList = new ArrayList<Price>();
+			try {
+				XSSFWorkbook workbook = new XSSFWorkbook(excelFile.getInputStream());
+				XSSFSheet worksheet = workbook.getSheetAt(0);
+				for(int i=3;i<worksheet.getPhysicalNumberOfRows()+1 ;i++) {
+					Price price = new Price();
+					XSSFRow row = worksheet.getRow(i);
+					price.setExchange(exchange);
+					switch(row.getCell(0).getCellType()) {
+						case NUMERIC:
+							String[] resultDate = formatter.format(row.getCell(0).getDateCellValue()).split("/");
+							price.setDate(formatter.parse(resultDate[1] + "/" + resultDate[0] + "/" + resultDate[2]));
+							break;
+						case BLANK:
+						case STRING:
+						case FORMULA:
+							price.setDate(formatter.parse(row.getCell(0).getStringCellValue()));
+							break;
+						default:
+							price.setDate(null);
+					}
+					price.setStock(row.getCell(1).getStringCellValue());
+					price.setRefer((float) row.getCell(2).getNumericCellValue());
+					price.setCeiling((float) row.getCell(3).getNumericCellValue());
+					price.setFloor((float) row.getCell(4).getNumericCellValue());
+					price.setOpen((float) row.getCell(5).getNumericCellValue());
+					price.setClose((float) row.getCell(6).getNumericCellValue());
+					price.setHighest((float) row.getCell(7).getNumericCellValue());
+					price.setLowest((float) row.getCell(8).getNumericCellValue());
+					price.setAvge((float) row.getCell(9).getNumericCellValue());
+					price.setChange_value((float) row.getCell(10).getNumericCellValue());
+					price.setChange_percent((float) row.getCell(11).getNumericCellValue());
+					price.setVolume_order(row.getCell(12).getNumericCellValue());
+					price.setVolume_put(row.getCell(13).getNumericCellValue());
+					price.setVolume_total(row.getCell(14).getNumericCellValue());
+					price.setValue_order(row.getCell(15).getNumericCellValue());
+					price.setValue_put(row.getCell(16).getNumericCellValue());
+					price.setValue_total(row.getCell(17).getNumericCellValue());
+					priceList.add(price);
 				}
-				price.setStock(row.getCell(1).getStringCellValue());
-				price.setRefer((float) row.getCell(2).getNumericCellValue());
-				price.setCeiling((float) row.getCell(3).getNumericCellValue());
-				price.setFloor((float) row.getCell(4).getNumericCellValue());
-				price.setOpen((float) row.getCell(5).getNumericCellValue());
-				price.setClose((float) row.getCell(6).getNumericCellValue());
-				price.setHighest((float) row.getCell(7).getNumericCellValue());
-				price.setLowest((float) row.getCell(8).getNumericCellValue());
-				price.setAvge((float) row.getCell(9).getNumericCellValue());
-				price.setChange_value((float) row.getCell(10).getNumericCellValue());
-				price.setChange_percent((float) row.getCell(11).getNumericCellValue());
-				price.setVolume_order(row.getCell(12).getNumericCellValue());
-				price.setVolume_put(row.getCell(13).getNumericCellValue());
-				price.setVolume_total(row.getCell(14).getNumericCellValue());
-				price.setValue_order(row.getCell(15).getNumericCellValue());
-				price.setValue_put(row.getCell(16).getNumericCellValue());
-				price.setValue_total(row.getCell(17).getNumericCellValue());
-				priceList.add(price);
+				workbook.close();
+				priceRepository.saveAll(priceList);
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ParseException e) {
+				e.printStackTrace();
 			}
-			workbook.close();
-			priceRepository.saveAll(priceList);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
 		}
 		model.addAttribute("prices", priceList);
 		return "price/result";
