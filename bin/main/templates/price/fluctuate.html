@@ -5,9 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/flag-icon.min.css">
+    <link rel="stylesheet" href="../css/price.css">
     <script src="../js/jquery-3.4.1.min.js"></script>
     <script src="../js/popper.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
+    <script>
+		$(function () {
+    		$('[data-toggle="tooltip"]').tooltip()
+		})
+    </script>
     <title>Stock Investment Management System</title>
 </head>
 <body>
@@ -15,6 +21,83 @@
 	<div class="container">
 		<div class="hero-unit">
 			<h1 th:text="#{price.fluctuate.title}">Stock price fluctuate</h1>
+			<div class="container bg-light">
+				<form th:action="@{/price/fluctuate}" th:object="${historySearch}" method="post">
+					<div class="form-group row" style="padding-top: 8px;">
+						<label for="exchange" class="col-sm-1 col-form-label text-nowrap" th:text="#{price.history.exchange}">Exchange</label>
+						<div class="col col-sm-2">
+							<select class="form-control"th:field="*{exchange}" required>
+								<option value="1">HOSE</option>
+								<option value="2">HNX</option>
+								<option value="3">UPCOM</option>
+							</select>
+						</div>
+						<label for="date_from" class="col-sm-1 col-form-label text-nowrap" th:text="#{price.history.date_from}">Date From</label>
+						<div class="col col-sm-3">
+							<input type="date" class="form-control" th:field="*{date_from}" style="width: auto" required />
+						</div>
+						<div class="col col-5"></div>
+					</div>
+					<div class="form-group row">
+						<label for="stock" class="col-sm-1 col-form-label text-nowrap" th:text="#{price.history.stock}">Stock</label>
+						<div class="col col-sm-2">
+							<select class="form-control" th:field="*{stock}">
+								<option value="" th:text="#{price.fluctuate.all}">All</option>
+								<option value="AAA">AAA</option>
+								<option value="ACB">ACB</option>
+								<option value="FPT">FPT</option>
+								<option value="VNM">VNM</option>
+							</select>
+						</div>
+						<label for="date_from" class="col-sm-1 col-form-label text-nowrap" th:text="#{price.history.date_to}">Date To</label>
+						<div class="col col-sm-3">
+							<input type="date" class="form-control" th:field="*{date_to}" style="width: auto" required />
+						</div>
+						<div class="col col-sm-2">
+							<input type="submit" class="btn btn-primary mb-2" name="search" id="search" th:value="#{price.history.search}" />
+						</div>
+						<div class="col col-sm-3">
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="table-responsive">
+				<table class="table table-bordered table-striped bg-main">
+					<thead class="text-center">
+						<tr>
+							<th scope="col" class="text-nowrap" data-toggle="tooltip" data-placement="top" th:text="#{price.fluctuate.stock}" th:title="#{price.fluctuate.stock.tooltip}"> Stock </th>
+							<th scope="col" class="text-nowrap" data-toggle="tooltip" data-placement="top" th:text="#{price.fluctuate.change_p}" th:title="#{price.fluctuate.change_p.tooltip}"> Change Percent </th>							
+							<th scope="col" class="text-nowrap" data-toggle="tooltip" data-placement="top" th:text="#{price.fluctuate.change_v}" th:title="#{price.fluctuate.change_v.tooltip}"> Change Volume </th>
+							<th scope="col" class="text-nowrap" data-toggle="tooltip" data-placement="top" th:text="#{price.fluctuate.refer}" th:title="#{price.fluctuate.refer.tooltip}"> Refer </th>
+							<th scope="col" class="text-nowrap" data-toggle="tooltip" data-placement="top" th:text="#{price.fluctuate.close}" th:title="#{price.fluctuate.close.tooltip}"> Close </th>
+							<th scope="col" class="text-nowrap" data-toggle="tooltip" data-placement="top" th:text="#{price.fluctuate.close_max}" th:title="#{price.fluctuate.close_max.tooltip}"> Close Max </th>
+							<th scope="col" class="text-nowrap" data-toggle="tooltip" data-placement="top" th:text="#{price.fluctuate.close_min}" th:title="#{price.fluctuate.close_min.tooltip}"> Close Min </th>
+							<th scope="col" class="text-nowrap" data-toggle="tooltip" data-placement="top" th:text="#{price.fluctuate.highest_max}" th:title="#{price.fluctuate.highest_max.tooltip}"> Highest Max </th>
+							<th scope="col" class="text-nowrap" data-toggle="tooltip" data-placement="top" th:text="#{price.fluctuate.lowest_min}" th:title="#{price.fluctuate.lowest_min.tooltip}"> Lowest Min </th>
+							<th scope="col" class="text-nowrap" data-toggle="tooltip" data-placement="top" th:text="#{price.fluctuate.order_avg}" th:title="#{price.fluctuate.order_avg.tooltip}"> Volume Order Avg </th>
+							<th scope="col" class="text-nowrap" data-toggle="tooltip" data-placement="top" th:text="#{price.fluctuate.total_avg}" th:title="#{price.fluctuate.total_avg.tooltip}"> Volume Total Avg </th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:if="${priceFluctuates.empty}">
+			    			<td colspan="19" th:text="#{price.fluctuate.notfound}">No fluctuate stock price</td>
+			    		</tr>
+						<tr th:each="priceFluctuate : ${priceFluctuates}">
+							<td class="text-center"><span th:text="${priceFluctuate.t_stock}"> Stock </span></td>
+							<td><span class="float-right" th:classappend="${priceFluctuate.getClassChange()}" th:text="${priceFluctuate.c_percent}"> Change Percent </span></td>							
+							<td><span class="float-right" th:classappend="${priceFluctuate.getClassChange()}" th:text="${priceFluctuate.c_volume}"> Change Volume </span></td>
+							<td><span class="float-right reference" th:text="${priceFluctuate.f_refer}"> Refer </span></td>
+							<td><span class="float-right" th:classappend="${priceFluctuate.getClassToClose()}" th:text="${priceFluctuate.t_close}"> Close </span></td>
+							<td><span class="float-right" th:classappend="${priceFluctuate.getClassMaxClose()}" th:text="${priceFluctuate.a_close}"> Close Max </span></td>
+							<td><span class="float-right" th:classappend="${priceFluctuate.getClassMinClose()}" th:text="${priceFluctuate.b_close}"> Close Min </span></td>
+							<td><span class="float-right" th:classappend="${priceFluctuate.getClassHighest()}" th:text="${priceFluctuate.h_highest}"> Highest Max </span></td>
+							<td><span class="float-right" th:classappend="${priceFluctuate.getClassLowest()}" th:text="${priceFluctuate.l_lowest}"> Lowest Min </span></td>
+							<td><span class="float-right" th:text="${#numbers.formatDecimal(priceFluctuate.v_order,0,'COMMA',0,'POINT')}"> Volume Order Avg </span></td>
+							<td><span class="float-right" th:text="${#numbers.formatDecimal(priceFluctuate.v_total,0,'COMMA',0,'POINT')}"> Volume Total Avg </span></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 		<div th:replace="fragments/footer :: footer"></div>
 	</div>

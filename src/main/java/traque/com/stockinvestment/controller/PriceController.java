@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import traque.com.stockinvestment.entity.Price;
+import traque.com.stockinvestment.model.PriceFluctuateRepository;
 import traque.com.stockinvestment.model.PriceRepository;
 import traque.com.stockinvestment.price.HistorySearch;
 
@@ -41,6 +42,9 @@ public class PriceController {
 	
 	@Autowired
 	private PriceRepository priceRepository;
+	
+	@Autowired
+	private PriceFluctuateRepository priceFluctuateRepository;
 
 	@GetMapping("/history")
 	public String history(Model model) {
@@ -105,6 +109,37 @@ public class PriceController {
 	@GetMapping("/fluctuate")
 	public String fluctuate(Model model) {
 		log.info("PriceController fluctuate start.");
+		// Initialize History Search
+		HistorySearch historySearch = new HistorySearch();
+		historySearch.setExchange(1);
+		historySearch.setStock(null);
+		historySearch.setPage(1);
+		historySearch.setSize(100);
+		Calendar calendar = Calendar.getInstance();
+		historySearch.setDate_to(calendar.getTime());
+		calendar.add(Calendar.MONTH, -1);
+		historySearch.setDate_from(calendar.getTime());
+		// Set Attributes For Model
+		model.addAttribute("historySearch", historySearch);
+		model.addAttribute("priceFluctuates", priceFluctuateRepository.findPriceFluctuate(historySearch.getExchange(),
+				historySearch.getStock(),
+				historySearch.getDate_from(),
+				historySearch.getDate_to()));
+		return "price/fluctuate";
+	}
+	
+	@PostMapping("/fluctuate")
+	public String fluctuateSearch(@ModelAttribute("historySearch") HistorySearch historySearch ,Model model) {
+		log.info("PriceController fluctuateSearch start.");
+		// Check Search All With Stock
+		if (historySearch.getStock().isEmpty()) {
+			historySearch.setStock(null);
+		}
+		model.addAttribute("historySearch", historySearch);
+		model.addAttribute("priceFluctuates", priceFluctuateRepository.findPriceFluctuate(historySearch.getExchange(),
+				historySearch.getStock(),
+				historySearch.getDate_from(),
+				historySearch.getDate_to()));
 		return "price/fluctuate";
 	}
 	
@@ -129,7 +164,8 @@ public class PriceController {
 				price.setExchange(exchange);
 				switch(row.getCell(0).getCellType()) {
 					case NUMERIC:
-						price.setDate(row.getCell(0).getDateCellValue());
+						String[] resultDate = formatter.format(row.getCell(0).getDateCellValue()).split("/");
+						price.setDate(formatter.parse(resultDate[1] + "/" + resultDate[0] + "/" + resultDate[2]));
 						break;
 					case BLANK:
 					case STRING:
@@ -166,6 +202,6 @@ public class PriceController {
 			e.printStackTrace();
 		}
 		model.addAttribute("prices", priceList);
-		return "price/history";
+		return "price/result";
 	}
 }

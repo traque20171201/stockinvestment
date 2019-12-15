@@ -91,7 +91,7 @@
 			    	</thead>
 			    	<tbody>
 			    		<tr th:if="${prices.empty}">
-			    			<td colspan="19" th:text="#{price.history.notfound}">No historical stock price</td>
+			    			<td colspan="13" th:text="#{price.history.notfound}">No historical stock price</td>
 			    		</tr>
 			    		<tr th:each="price : ${prices}">
 			    			<td class="text-center"><span th:text="${#dates.format(price.date, #messages.msg('date.format'))}"> Date </span></td>

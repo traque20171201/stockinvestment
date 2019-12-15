@@ -12,7 +12,7 @@ import traque.com.stockinvestment.entity.Price;
 
 public interface PriceRepository extends CrudRepository<Price, Integer> {
 
-	@Query("SELECT p FROM Price p WHERE p.exchange = :exchange AND (:stock IS NULL OR p.stock = : stock) "
+	@Query("SELECT p FROM Price p WHERE p.exchange = :exchange AND (:stock IS NULL OR p.stock = :stock) "
 			+ "AND p.date >= :date_from AND p.date <= :date_to")
 	public Page<Price> findPriceHistory(@Param("exchange") Integer exchange,
 			@Param("stock") String stock,
