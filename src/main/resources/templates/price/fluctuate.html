@@ -5,10 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/flag-icon.min.css">
+    <link rel="stylesheet" href="../css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="../css/responsive.bootstrap4.min.css">
     <link rel="stylesheet" href="../css/price.css">
     <script src="../js/jquery-3.4.1.min.js"></script>
     <script src="../js/popper.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/jquery.dataTables.min.js"></script>
+	<script src="../js/dataTables.bootstrap4.min.js"></script>
+	<script src="../js/dataTables.responsive.min.js"></script>
+	<script src="../js/responsive.bootstrap4.min.js"></script>
     <script>
 		$(function () {
     		$('[data-toggle="tooltip"]').tooltip()
@@ -43,10 +49,7 @@
 						<div class="col col-sm-2">
 							<select class="form-control" th:field="*{stock}">
 								<option value="" th:text="#{price.fluctuate.all}">All</option>
-								<option value="AAA">AAA</option>
-								<option value="ACB">ACB</option>
-								<option value="FPT">FPT</option>
-								<option value="VNM">VNM</option>
+								<option th:each="stl : ${stockList}" th:value="${stl.stock}" th:text="${stl.stock}"></option>
 							</select>
 						</div>
 						<label for="date_from" class="col-sm-1 col-form-label text-nowrap" th:text="#{price.history.date_to}">Date To</label>
@@ -62,7 +65,7 @@
 				</form>
 			</div>
 			<div class="table-responsive">
-				<table class="table table-bordered table-striped bg-main">
+				<table id="tablePrice" class="table table-bordered table-striped bg-main">
 					<thead class="text-center">
 						<tr>
 							<th scope="col" class="text-nowrap" data-toggle="tooltip" data-placement="top" th:text="#{price.fluctuate.stock}" th:title="#{price.fluctuate.stock.tooltip}"> Stock </th>
@@ -101,5 +104,25 @@
 		</div>
 		<div th:replace="fragments/footer :: footer"></div>
 	</div>
+	<script>
+		$(document).ready(function() {
+			$('#tablePrice').DataTable();
+			// get stock list
+			$("#exchange").change(function() {
+				var filejson = "data/hose.json";
+				if($(this).val() == 2) {
+					filejson = "data/hnx.json";
+				} else if($(this).val() == 3) {
+					filejson = ".data/upcom.json";
+				}
+				$.getJSON(filejson, function(data) {
+					$("#stock").find('option').remove().end().append('<option value="" th:text="#{price.history.all}">All</option>').val('');
+					$.each(data, function(key, val) {
+						$("#stock").append(new Option(val.stock, val.stock));
+					})
+				});
+			});
+		});
+	</script>
 </body>
 </html>

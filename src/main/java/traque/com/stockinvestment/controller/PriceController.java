@@ -1,13 +1,12 @@
 package traque.com.stockinvestment.controller;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,10 +28,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import traque.com.stockinvestment.entity.Price;
 import traque.com.stockinvestment.model.PriceFluctuateRepository;
 import traque.com.stockinvestment.model.PriceRepository;
 import traque.com.stockinvestment.price.HistorySearch;
+import traque.com.stockinvestment.price.StockList;
 
 @Controller
 @RequestMapping("/price")
@@ -59,6 +62,16 @@ public class PriceController {
 		historySearch.setDate_to(calendar.getTime());
 		calendar.add(Calendar.MONTH, -1);
 		historySearch.setDate_from(calendar.getTime());
+		// Get stock list from file
+		ObjectMapper mapper = new ObjectMapper();
+		TypeReference<List<StockList>> typeReference = new TypeReference<List<StockList>>() {};
+		InputStream inputStream = TypeReference.class.getResourceAsStream("/json/hose.json");
+		try {
+			List<StockList> stockList = mapper.readValue(inputStream, typeReference);
+			model.addAttribute("stockList", stockList);	
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
 		// Initialize Pagination
 		Pageable pageable = PageRequest.of(historySearch.getPage() - 1,historySearch.getSize(),Sort.by("date").descending().and(Sort.by("stock")));
 		// Find Price History
@@ -67,12 +80,6 @@ public class PriceController {
 				historySearch.getDate_from(),
 				historySearch.getDate_to(),
 				pageable);
-		// Set Display Pagination
-		int totalPages = prices.getTotalPages();
-		if (totalPages > 0) {
-			List<Integer> pageNumbers = IntStream.rangeClosed(1,totalPages).boxed().collect(Collectors.toList());
-			model.addAttribute("pageNumbers", pageNumbers);
-		}
 		// Set Attributes For Model
 		model.addAttribute("historySearch", historySearch);
 		model.addAttribute("prices", prices);
@@ -86,6 +93,22 @@ public class PriceController {
 		if (historySearch.getStock().isEmpty()) {
 			historySearch.setStock(null);
 		}
+		// Get stock list from file
+		ObjectMapper mapper = new ObjectMapper();
+		String filejson = "/json/hose.json";
+		if (historySearch.getExchange().equals(2)) {
+			filejson = "/json/hnx.json";
+		} else if(historySearch.getExchange().equals(3)) {
+			filejson = "/json/upcom.json";
+		}
+		TypeReference<List<StockList>> typeReference = new TypeReference<List<StockList>>() {};
+		InputStream inputStream = TypeReference.class.getResourceAsStream(filejson);
+		try {
+			List<StockList> stockList = mapper.readValue(inputStream, typeReference);
+			model.addAttribute("stockList", stockList);	
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
 		// Initialize Pagination
 		Pageable pageable = PageRequest.of(historySearch.getPage() - 1,historySearch.getSize(),Sort.by("date").descending().and(Sort.by("stock")));
 		// Find Price History
@@ -94,12 +117,6 @@ public class PriceController {
 				historySearch.getDate_from(),
 				historySearch.getDate_to(),
 				pageable);
-		// Set Display Pagination
-		int totalPages = prices.getTotalPages();
-		if (totalPages > 0) {
-			List<Integer> pageNumbers = IntStream.rangeClosed(1,totalPages).boxed().collect(Collectors.toList());
-			model.addAttribute("pageNumbers", pageNumbers);
-		}
 		// Set Attributes For Model
 		model.addAttribute("historySearch", historySearch);
 		model.addAttribute("prices", prices);
@@ -119,6 +136,16 @@ public class PriceController {
 		historySearch.setDate_to(calendar.getTime());
 		calendar.add(Calendar.MONTH, -1);
 		historySearch.setDate_from(calendar.getTime());
+		// Get stock list from file
+		ObjectMapper mapper = new ObjectMapper();
+		TypeReference<List<StockList>> typeReference = new TypeReference<List<StockList>>() {};
+		InputStream inputStream = TypeReference.class.getResourceAsStream("/json/hose.json");
+		try {
+			List<StockList> stockList = mapper.readValue(inputStream, typeReference);
+			model.addAttribute("stockList", stockList);	
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
 		// Set Attributes For Model
 		model.addAttribute("historySearch", historySearch);
 		model.addAttribute("priceFluctuates", priceFluctuateRepository.findPriceFluctuate(historySearch.getExchange(),
@@ -134,6 +161,22 @@ public class PriceController {
 		// Check Search All With Stock
 		if (historySearch.getStock().isEmpty()) {
 			historySearch.setStock(null);
+		}
+		// Get stock list from file
+		ObjectMapper mapper = new ObjectMapper();
+		String filejson = "/json/hose.json";
+		if (historySearch.getExchange().equals(2)) {
+			filejson = "/json/hnx.json";
+		} else if(historySearch.getExchange().equals(3)) {
+			filejson = "/json/upcom.json";
+		}
+		TypeReference<List<StockList>> typeReference = new TypeReference<List<StockList>>() {};
+		InputStream inputStream = TypeReference.class.getResourceAsStream(filejson);
+		try {
+			List<StockList> stockList = mapper.readValue(inputStream, typeReference);
+			model.addAttribute("stockList", stockList);	
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		model.addAttribute("historySearch", historySearch);
 		model.addAttribute("priceFluctuates", priceFluctuateRepository.findPriceFluctuate(historySearch.getExchange(),

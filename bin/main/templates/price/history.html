@@ -21,7 +21,7 @@
 					<div class="form-group row" style="padding-top: 8px;">
 						<label for="exchange" class="col-sm-1 col-form-label text-nowrap" th:text="#{price.history.exchange}">Exchange</label>
 						<div class="col col-sm-2">
-							<select class="form-control"th:field="*{exchange}" required>
+							<select class="form-control" th:field="*{exchange}" required>
 								<option value="1">HOSE</option>
 								<option value="2">HNX</option>
 								<option value="3">UPCOM</option>
@@ -38,10 +38,7 @@
 						<div class="col col-sm-2">
 							<select class="form-control" th:field="*{stock}">
 								<option value="" th:text="#{price.history.all}">All</option>
-								<option value="AAA">AAA</option>
-								<option value="ACB">ACB</option>
-								<option value="FPT">FPT</option>
-								<option value="VNM">VNM</option>
+								<option th:each="stl : ${stockList}" th:value="${stl.stock}" th:text="${stl.stock}"></option>
 							</select>
 						</div>
 						<label for="date_from" class="col-sm-1 col-form-label text-nowrap" th:text="#{price.history.date_to}">Date To</label>
@@ -130,6 +127,20 @@
 			$("#size").change(function() {
 				$("#page").val(1);
 				$("form").submit();
+			});
+			$("#exchange").change(function() {
+				var filejson = "data/hose.json";
+				if($(this).val() == 2) {
+					filejson = "data/hnx.json";
+				} else if($(this).val() == 3) {
+					filejson = "data/upcom.json";
+				}
+				$.getJSON(filejson, function(data) {
+					$("#stock").find('option').remove().end().append('<option value="" th:text="#{price.history.all}">All</option>').val('');
+					$.each(data, function(key, val) {
+						$("#stock").append(new Option(val.stock, val.stock));
+					})
+				});
 			});
 		});
 	</script>
