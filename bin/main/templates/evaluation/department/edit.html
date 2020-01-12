@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="../../../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../../css/flag-icon.min.css">
+    <link rel="stylesheet" href="../../../css/price.css">
+    <script src="../../../js/jquery-3.4.1.min.js"></script>
+    <script src="../../../js/popper.min.js"></script>
+    <script src="../../../js/bootstrap.min.js"></script>
+    <title>Evaluation System</title>
+</head>
+<body>
+	<div th:replace="fragments/header :: header"></div>
+	<div class="container">
+		<div class="hero-unit">
+			<h1>Bổ sung đánh giá phòng ban</h1>
+			<div class="container">
+				<div class="form-group row">
+					<label for="departmentName" class="col-sm-1 col-form-label text-nowrap" th:text="#{evaluation.departmentId}">Department</label>
+					<div class="col col-sm-4"><span th:text="${departmentEvaluation.departmentId}"> Department Name </span></div>
+					<label for="name" class="col-sm-1 col-form-label text-nowrap" th:text="#{evaluation.year}">Year</label>
+					<div class="col col-sm-2"><span th:text="${departmentEvaluation.year}"> Year </span></div>
+				</div>
+			</div>
+			<div class="container">
+				<h3>Bổ sung nhiệm vụ</h3>
+				<form th:action=@{/evaluation/department/update} method="post" enctype="multipart/form-data" th:object="${departmentTask}">
+					<label for="name" class="col-sm-1 col-form-label text-nowrap" th:text="#{evaluation.task}">Task</label>
+					<div class="col col-sm-6">
+						<input type="text" class="form-control" th:field="*{name}" required />
+						<span th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Task Name Error</span>
+					</div>
+					<label for="rate" class="col-sm-1 col-form-label text-nowrap" th:text="#{evaluation.rate}">Rate</label>
+					<div class="col col-sm-2">
+						<input type="number" class="form-control" th:field="*{rate}" required />
+						<span th:if="${#fields.hasErrors('rate')}" th:errors="*{rate}">Rate Error</span>
+					</div>
+					<div class="col col-sm-2">
+						<button type="submit" class="btn btn-primary mb-2" th:text="#{department.new}">Add New</button>
+						<input type="hidden" th:field="*{departmentEvaluationId}" th:value="${departmentEvaluation.id}" />
+					</div>
+				</form>
+			</div>
+			<div class="container" th:if="${!departmentTasks.empty}">
+				<div class="table-responsive">
+					<table class="table table-bordered table-striped bg-main">
+						<thead class="text-center">
+							<tr>
+								<th rowspan="1" scope="col" th:text="#{evaluation.department.no}">No</th>
+								<th rowspan="1" scope="col" th:text="#{evaluation.department.task}">Name</th>
+								<th rowspan="1" scope="col" th:text="#{evaluation.department.rate}">Rate</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="departmentTask : ${departmentTasks}">
+								<td class="text-center"><span th:text="${departmentTask.id}"> Id </span></td>
+								<td class="text-center"><span th:text="${departmentTask.name}"> Name </span></td>
+								<td class="text-center"><span th:text="${departmentTask.rate}"> Rate </span></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div th:replace="fragments/footer :: footer"></div>
+	</div>
+</body>
+</html>

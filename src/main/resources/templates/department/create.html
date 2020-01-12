@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/flag-icon.min.css">
+    <link rel="stylesheet" href="../css/price.css">
+    <script src="../js/jquery-3.4.1.min.js"></script>
+    <script src="../js/popper.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <title>Evaluation System</title>
+</head>
+<body>
+	<div th:replace="fragments/header :: header"></div>
+	<div class="container">
+		<div class="hero-unit">
+			<h1>Thêm mới phòng ban</h1>
+			<form th:action=@{/department/insert} method="post" enctype="multipart/form-data" th:object="${department}">
+				<div class="form-group row">
+					<label for="name" class="col-sm-2 col-form-label text-nowrap" th:text="#{department.name}">Deparment Name</label>
+					<div class="col col-sm-6">
+						<input type="text" class="form-control" th:field="*{name}" required />
+						<span th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</span>
+					</div>
+					<div class="col col-sm-2">
+						<button type="submit" class="btn btn-primary mb-2" th:text="#{department.new}">Add New</button>
+					</div>
+					<div class="col col-sm-2">
+					</div>
+				</div>				
+			</form>
+		</div>
+		<div th:replace="fragments/footer :: footer"></div>
+	</div>
+</body>
+</html>

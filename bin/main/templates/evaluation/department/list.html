@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="../../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/flag-icon.min.css">
+    <link rel="stylesheet" href="../../css/price.css">
+    <script src="../../js/jquery-3.4.1.min.js"></script>
+    <script src="../../js/popper.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+    <title>Evaluation System</title>
+</head>
+<body>
+	<div th:replace="fragments/header :: header"></div>
+	<div class="container">
+		<div class="hero-unit">
+			<h1>Danh sách đánh giá phòng ban</h1>
+			<div class="table-responsive">
+				<table class="table table-bordered table-striped bg-main">
+					<thead class="text-center">
+						<tr>
+							<th rowspan="1" scope="col" th:text="#{department.id}">Id</th>
+							<th rowspan="1" scope="col" th:text="#{department.name}">Name</th>
+							<th rowspan="1" scope="col" th:text="#{evaluation.year}">Year</th>
+							<th rowspan="1" scope="col" >&nbsp;</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:if="${departmentEvaluations.empty}">
+							<td colspan="4" th:text="#{department.notfound}">No Department</td>
+						</tr>
+						<tr th:each="departmentEvaluation : ${departmentEvaluations}">
+							<td class="text-center"><span th:text="${departmentEvaluation.id}"> Id </span></td>
+							<td class="text-center"><span th:text="${departmentEvaluation.departmentId}"> Department </span></td>
+							<td class="text-center"><span th:text="${departmentEvaluation.year}"> Year </span></td>
+							<td class="text-center">
+								<a th:href="@{/evaluation/department/edit/{id}(id=${departmentEvaluation.id})}" th:text="#{department.update}" class="btn btn-primary mb-2"> Update </a>
+								<a th:href="@{/evaluation/department/delete/{id}(id=${departmentEvaluation.id})}" th:text="#{department.delete}" class="btn btn-primary mb-2"> Delete </a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div th:replace="fragments/footer :: footer"></div>
+	</div>
+</body>
+</html>

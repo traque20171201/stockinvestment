@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="../../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/flag-icon.min.css">
+    <link rel="stylesheet" href="../../css/price.css">
+    <script src="../../js/jquery-3.4.1.min.js"></script>
+    <script src="../../js/popper.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+    <title>Evaluation System</title>
+</head>
+<body>
+	<div th:replace="fragments/header :: header"></div>
+	<div class="container">
+		<div class="hero-unit">
+			<h1>Tạo mới đánh giá phòng ban</h1>
+			<form th:action=@{/evaluation/department/insert} method="post" enctype="multipart/form-data" th:object="${departmentEvaluation}">
+				<div class="form-group row">
+					<label for="departmentId" class="col-sm-1 col-form-label text-nowrap" th:text="#{evaluation.departmentId}">Department</label>
+					<div class="col col-sm-4">
+						<select class="form-control" th:field="*{departmentId}">
+							<option th:each="department : ${departments}" th:value="${department.id}" th:text="${department.name}"></option>
+						</select>
+						<span th:if="${#fields.hasErrors('*{departmentId}')}" th:errors="*{departmentId}">Department Id Error</span>
+					</div>
+					<label for="name" class="col-sm-1 col-form-label text-nowrap" th:text="#{evaluation.year}">Year</label>
+					<div class="col col-sm-2">
+						<select class="form-control" th:field="*{year}">
+							<option th:each="year : ${years}" th:value="${year}" th:text="${year}"></option>
+						</select>
+						<span th:if="${#fields.hasErrors('year')}" th:errors="*{year}">Year Error</span>
+					</div>
+					<div class="col col-sm-2">
+						<button type="submit" class="btn btn-primary mb-2" th:text="#{department.new}">Add New</button>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div th:replace="fragments/footer :: footer"></div>
+	</div>
+</body>
+</html>
