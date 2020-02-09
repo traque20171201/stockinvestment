@@ -87,7 +87,7 @@
 			    		</tr>
 						<tr th:each="priceFluctuate : ${priceFluctuates}">
 							<td class="text-center"><span th:text="${priceFluctuate.t_stock}"> Stock </span></td>
-							<td><span class="float-right" th:classappend="${priceFluctuate.getClassChange()}" th:text="${priceFluctuate.c_percent}"> Change Percent </span></td>							
+							<td><span class="float-right" th:classappend="${priceFluctuate.getClassChange()}" th:text="${priceFluctuate.c_percent} + '%'"> Change Percent </span></td>							
 							<td><span class="float-right" th:classappend="${priceFluctuate.getClassChange()}" th:text="${priceFluctuate.c_volume}"> Change Volume </span></td>
 							<td><span class="float-right reference" th:text="${priceFluctuate.f_refer}"> Refer </span></td>
 							<td><span class="float-right" th:classappend="${priceFluctuate.getClassToClose()}" th:text="${priceFluctuate.t_close}"> Close </span></td>
@@ -106,7 +106,15 @@
 	</div>
 	<script>
 		$(document).ready(function() {
-			$('#tablePrice').DataTable();
+		    $('#tablePrice').DataTable({
+				"paging":   false,
+				"info":     false,
+				"searching": false,
+				"order": [ [1, "desc"] ],
+				"columnDefs": [ {
+					//"orderable": false, "targets": 5
+				} ]
+			});
 			// get stock list
 			$("#exchange").change(function() {
 				var filejson = "data/hose.json";
