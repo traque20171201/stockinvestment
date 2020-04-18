@@ -65,6 +65,14 @@
 				</form>
 			</div>
 			<div class="table-responsive">
+			    <div class="row">
+			    	<div class="col-sm-12 col-md-6"></div>
+			    	<div class="col-sm-12 col-md-6">
+			    		<div class="dataTables_filter_custom">
+			    			<label>Order:<input type="search" id="volumes_order" name="volumes_order" class="form-control form-control-sm" placeholder="Input Volume"></label>
+			    		</div>
+			    	</div>
+			    </div>
 				<table id="tablePrice" class="table table-bordered table-striped bg-main">
 					<thead class="text-center">
 						<tr>
@@ -73,6 +81,10 @@
 							<th scope="col" class="text-nowrap" data-toggle="tooltip" data-placement="top" th:text="#{price.fluctuate.change_v}" th:title="#{price.fluctuate.change_v.tooltip}"> Change Volume </th>
 							<th scope="col" class="text-nowrap" data-toggle="tooltip" data-placement="top" th:text="#{price.fluctuate.refer}" th:title="#{price.fluctuate.refer.tooltip}"> Refer </th>
 							<th scope="col" class="text-nowrap" data-toggle="tooltip" data-placement="top" th:text="#{price.fluctuate.close}" th:title="#{price.fluctuate.close.tooltip}"> Close </th>
+							<!-- 20200418 ThinhNH Add Start - column min_compare_close -->
+							<th scope="col" class="text-nowrap" data-toggle="tooltip" data-placement="top" th:text="#{price.fluctuate.change_p}" th:title="#{price.fluctuate.change_p_b.tooltip}"> Change Percent </th>							
+							<th scope="col" class="text-nowrap" data-toggle="tooltip" data-placement="top" th:text="#{price.fluctuate.change_v}" th:title="#{price.fluctuate.change_v_b.tooltip}"> Change Volume </th>
+							<!-- 20200418 ThinhNH Add End -->
 							<th scope="col" class="text-nowrap" data-toggle="tooltip" data-placement="top" th:text="#{price.fluctuate.close_max}" th:title="#{price.fluctuate.close_max.tooltip}"> Close Max </th>
 							<th scope="col" class="text-nowrap" data-toggle="tooltip" data-placement="top" th:text="#{price.fluctuate.close_min}" th:title="#{price.fluctuate.close_min.tooltip}"> Close Min </th>
 							<th scope="col" class="text-nowrap" data-toggle="tooltip" data-placement="top" th:text="#{price.fluctuate.highest_max}" th:title="#{price.fluctuate.highest_max.tooltip}"> Highest Max </th>
@@ -91,6 +103,10 @@
 							<td><span class="float-right" th:classappend="${priceFluctuate.getClassChange()}" th:text="${priceFluctuate.c_volume}"> Change Volume </span></td>
 							<td><span class="float-right reference" th:text="${priceFluctuate.f_refer}"> Refer </span></td>
 							<td><span class="float-right" th:classappend="${priceFluctuate.getClassToClose()}" th:text="${priceFluctuate.t_close}"> Close </span></td>
+							<!-- 20200418 ThinhNH Add Start - column min_compare_close -->
+							<td><span class="float-right" th:classappend="${priceFluctuate.getClassChangeB()}" th:text="${priceFluctuate.b_percent} + '%'"> Change Percent B </span></td>							
+							<td><span class="float-right" th:classappend="${priceFluctuate.getClassChangeB()}" th:text="${priceFluctuate.b_volume}"> Change Volume B </span></td>
+							<!-- 20200418 ThinhNH Add End -->
 							<td><span class="float-right" th:classappend="${priceFluctuate.getClassMaxClose()}" th:text="${priceFluctuate.a_close}"> Close Max </span></td>
 							<td><span class="float-right" th:classappend="${priceFluctuate.getClassMinClose()}" th:text="${priceFluctuate.b_close}"> Close Min </span></td>
 							<td><span class="float-right" th:classappend="${priceFluctuate.getClassHighest()}" th:text="${priceFluctuate.h_highest}"> Highest Max </span></td>
@@ -105,16 +121,37 @@
 		<div th:replace="fragments/footer :: footer"></div>
 	</div>
 	<script>
+		/* Custom filtering function which will search data in column eleven greater than */
+		$.fn.dataTable.ext.search.push(
+		    function( settings, data, dataIndex ) {
+		        var volumes_order = parseInt( $('#volumes_order').val(), 10 );
+		        var order = parseInt( data[11].replace(/,/g, '') ) || 0; // use data for the order column
+		 
+		        if (isNaN(volumes_order) || volumes_order <= order) {
+		            return true;
+		        }
+		        return false;
+		    }
+		);
 		$(document).ready(function() {
-		    $('#tablePrice').DataTable({
+		    var table = $('#tablePrice').DataTable({
 				"paging":   false,
 				"info":     false,
-				"searching": false,
+				"searching": true,
 				"order": [ [1, "desc"] ],
 				"columnDefs": [ {
 					//"orderable": false, "targets": 5
 				} ]
 			});
+		 	// Event listener to the two range filtering inputs to redraw on input
+		 	$('#volumes_order').keyup( function() {
+		        table.draw();
+		    } );
+		    // Setup - add a text input to each footer cell
+		    $('#tablePrice thead th').each( function () {
+		    	var title = $(this).text();
+		    	//$(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+		    });
 			// get stock list
 			$("#exchange").change(function() {
 				var filejson = "data/hose.json";

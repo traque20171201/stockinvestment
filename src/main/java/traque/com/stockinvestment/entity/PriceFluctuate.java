@@ -29,6 +29,10 @@ import javax.persistence.SqlResultSetMapping;
 								@ColumnResult(name="f_floor", type=Float.class),
 								@ColumnResult(name="c_volume", type=Float.class),
 								@ColumnResult(name="c_percent", type=Float.class),
+								// 20200418 ThinhNH Add Start - column min_compare_close
+								@ColumnResult(name="b_volume", type=Float.class),
+								@ColumnResult(name="b_percent", type=Float.class),
+								// 20200418 ThinhNH Add End
 								@ColumnResult(name="v_order", type=Double.class),
 								@ColumnResult(name="v_total", type=Double.class),
 								@ColumnResult(name="a_date", type=Date.class),
@@ -67,6 +71,10 @@ import javax.persistence.SqlResultSetMapping;
 			" IFNULL(ROUND(F.floor,2),0) AS f_floor," + 
 			" ROUND(T.close - IFNULL(F.refer,T.close),2) AS c_volume," + 
 			" ROUND((T.close - IFNULL(F.refer,T.close))*100/IFNULL(F.refer,T.close),2) AS c_percent," + 
+			// 20200418 ThinhNH Add Start - column min_compare_close
+			" ROUND(T.close - B.close,2) AS b_volume," + 
+			" ROUND((T.close - B.close)*100/B.close,2) AS b_percent," + 
+			// 20200418 ThinhNH Add End
 			" V.avg_order AS v_order," + 
 			" V.avg_total AS v_total," + 
 			" A.date AS a_date," + 
@@ -256,6 +264,12 @@ public class PriceFluctuate {
 	
 	private Float c_percent;
 	
+	// 20200418 ThinhNH Add Start - column min_compare_close
+	private Float b_volume;
+	
+	private Float b_percent;
+	// 20200418 ThinhNH Add End
+	
 	private Double v_order;
 	
 	private Double v_total;
@@ -304,6 +318,9 @@ public class PriceFluctuate {
 			String t_stock, Float t_close, Float t_refer, Float t_ceiling, Float t_floor,
 			Float f_close, Float f_refer, Float f_ceiling, Float f_floor,
 			Float c_volume, Float c_percent, 
+			// 20200418 ThinhNH Add Start - column min_compare_close
+			Float b_volume, Float b_percent, 
+			// 20200418 ThinhNH Add End
 			Double v_order, Double v_total,
 			Date a_date, Float a_close, Float a_refer, Float a_ceiling, Float a_floor,
 			Date b_date, Float b_close, Float b_refer, Float b_ceiling, Float b_floor,
@@ -320,6 +337,10 @@ public class PriceFluctuate {
 		this.f_floor = f_floor;
 		this.c_volume = c_volume;
 		this.c_percent = c_percent;
+		// 20200418 ThinhNH Add Start - column min_compare_close
+		this.b_volume = b_volume;
+		this.b_percent = b_percent;
+		// 20200418 ThinhNH Add End
 		this.v_order = v_order;
 		this.v_total = v_total;
 		this.a_date = a_date;
@@ -439,6 +460,24 @@ public class PriceFluctuate {
 	public void setC_percent(Float c_percent) {
 		this.c_percent = c_percent;
 	}
+
+	// 20200418 ThinhNH Add Start - column min_compare_close
+	public Float getB_volume() {
+		return b_volume;
+	}
+
+	public void setB_volume(Float b_volume) {
+		this.b_volume = b_volume;
+	}
+	
+	public Float getB_percent() {
+		return b_percent;
+	}
+
+	public void setB_percent(Float b_percent) {
+		this.b_percent = b_percent;
+	}
+	// 20200418 ThinhNH Add End
 
 	public Double getV_order() {
 		return v_order;
@@ -628,6 +667,21 @@ public class PriceFluctuate {
 		}
 		return "";
 	}
+	
+	// 20200418 ThinhNH Add Start - column min_compare_close
+	public String getClassChangeB() {
+		if (Float.compare(this.b_volume,0) == 0) {
+			return "reference";
+		}
+		if (Float.compare(this.b_volume,0) < 0) {
+			return "reduce";
+		}
+		if (Float.compare(this.b_volume,0) > 0) {
+			return "up";
+		}
+		return "";
+	}
+	// 20200418 ThinhNH Add End
 	
 	public String getClassToClose() {
 		if (Float.compare(this.t_close,this.t_refer) == 0) {
